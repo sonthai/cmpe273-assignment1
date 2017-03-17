@@ -1,8 +1,9 @@
 from flask import Flask
-import requests
 import base64
 import re
 import sys
+import json
+import urllib2
 
 app = Flask(__name__)
 
@@ -13,9 +14,10 @@ def get_content(filename):
     return file_content
 
 def get_file_content(url):
-    response = requests.get(url)
-    if response.status_code == 200:
-        return base64.decodestring(response.json()['content'])
+    response = urllib2.urlopen(url)
+    if response.code == 200:
+        data = json.loads(response.read())
+        return base64.decodestring(data['content'])
     else:
         return "Failed to get latest commits."
 
